@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>serde的使用 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="以下是参加清华大学2025 春夏季开源操作系统训练营CH5的学习blog。本节关于操作系统的进程及进程管理主要内容有：  进程抽象，即进程描述符的创建，销毁等 进程管理，操作系统的进程调度相关  进程描述符进程描述符定义先给定进程描述符的定义： 1234567891011pub struct TaskControlBlock &#123;    &#x2F;&#x2F; Immutable    &#x2F;&#x2F;&#x2F; Proces">
+<meta property="og:type" content="website">
+<meta property="og:title" content="serde的使用">
+<meta property="og:url" content="https://rubick-hqm.github.io/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9Fch5_%E8%BF%9B%E7%A8%8B%E5%8F%8A%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="以下是参加清华大学2025 春夏季开源操作系统训练营CH5的学习blog。本节关于操作系统的进程及进程管理主要内容有：  进程抽象，即进程描述符的创建，销毁等 进程管理，操作系统的进程调度相关  进程描述符进程描述符定义先给定进程描述符的定义： 1234567891011pub struct TaskControlBlock &#123;    &#x2F;&#x2F; Immutable    &#x2F;&#x2F;&#x2F; Proces">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://rubick-hqm.github.io/image.png">
+<meta property="article:published_time" content="2025-04-17T07:04:57.425Z">
+<meta property="article:modified_time" content="2025-04-17T07:04:57.425Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://rubick-hqm.github.io/image.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://rubick-hqm.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="page-" class="h-entry article article-type-page" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9Fch5_%E8%BF%9B%E7%A8%8B%E5%8F%8A%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86.html" class="article-date">
+  <time class="dt-published" datetime="2025-04-17T07:04:57.425Z" itemprop="datePublished">2025-04-17</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      serde的使用
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>以下是参加清华大学2025 春夏季开源操作系统训练营CH5的学习blog。<br>本节关于操作系统的进程及进程管理<br>主要内容有：</p>
+<ol>
+<li>进程抽象，即进程描述符的创建，销毁等</li>
+<li>进程管理，操作系统的进程调度相关</li>
+</ol>
+<h2 id="进程描述符"><a href="#进程描述符" class="headerlink" title="进程描述符"></a>进程描述符</h2><h3 id="进程描述符定义"><a href="#进程描述符定义" class="headerlink" title="进程描述符定义"></a>进程描述符定义</h3><p>先给定进程描述符的定义：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="keyword">struct</span> <span class="title class_">TaskControlBlock</span> &#123;</span><br><span class="line">    <span class="comment">// Immutable</span></span><br><span class="line">    <span class="comment">/// Process identifier</span></span><br><span class="line">    <span class="keyword">pub</span> pid: PidHandle,</span><br><span class="line"></span><br><span class="line">    <span class="comment">/// Kernel stack corresponding to PID</span></span><br><span class="line">    <span class="keyword">pub</span> kernel_stack: KernelStack,</span><br><span class="line"></span><br><span class="line">    <span class="comment">/// Mutable</span></span><br><span class="line">    inner: UPSafeCell&lt;TaskControlBlockInner&gt;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里先定义了进程描述符</p>
+<ul>
+<li>pid：进程唯一标识</li>
+<li>kernel_stack：进程内核栈，内核栈被分配在内核地址空间的跳板下的页上<br><img src="/image.png" alt="alt text"></li>
+</ul>
+<p>inner是一些可变字段</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="keyword">struct</span> <span class="title class_">TaskControlBlockInner</span> &#123;</span><br><span class="line">    <span class="comment">// 仅展示一些重要字段</span></span><br><span class="line">    <span class="keyword">pub</span> task_cx: TaskContext,</span><br><span class="line">    <span class="keyword">pub</span> task_status: TaskStatus,</span><br><span class="line">    <span class="keyword">pub</span> memory_set: MemorySet,</span><br><span class="line">    <span class="keyword">pub</span> parent: <span class="type">Option</span>&lt;Weak&lt;TaskControlBlock&gt;&gt;,</span><br><span class="line">    <span class="keyword">pub</span> children: <span class="type">Vec</span>&lt;Arc&lt;TaskControlBlock&gt;&gt;,</span><br><span class="line">    <span class="keyword">pub</span> exit_code: <span class="type">i32</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>task_cx: 进程上下文，用于进程切换时上下文的保存</li>
+<li>task_status: 进程状态</li>
+<li>memory_set: 进程地址空间</li>
+<li>parent: 父进程，使用弱引用指向</li>
+<li>children：子进程</li>
+<li>exit_code: 进程退出码，提供给父进程使用</li>
+</ul>
+<h3 id="进程描述符创建"><a href="#进程描述符创建" class="headerlink" title="进程描述符创建"></a>进程描述符创建</h3><p>先提供创建代码：</p>
+<figure class="highlight rust"><figcaption><span>linenos</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="keyword">fn</span> <span class="title function_">new</span>(elf_data: &amp;[<span class="type">u8</span>]) <span class="punctuation">-&gt;</span> <span class="keyword">Self</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> (memory_set, user_sp, entry_point) = MemorySet::<span class="title function_ invoke__">from_elf</span>(elf_data);</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">pid_handle</span> = <span class="title function_ invoke__">pid_alloc</span>();</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">kernel_stack</span> = <span class="title function_ invoke__">kstack_alloc</span>();</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">kernel_stack_top</span> = kernel_stack.<span class="title function_ invoke__">get_top</span>();</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">task_control_block</span> = <span class="keyword">Self</span> &#123;</span><br><span class="line">        pid: pid_handle,</span><br><span class="line">        kernel_stack,</span><br><span class="line">        inner: <span class="keyword">unsafe</span> &#123;</span><br><span class="line">            UPSafeCell::<span class="title function_ invoke__">new</span>(TaskControlBlockInner &#123;</span><br><span class="line">                task_cx: TaskContext::<span class="title function_ invoke__">goto_trap_return</span>(kernel_stack_top),</span><br><span class="line">                task_status: TaskStatus::Ready,</span><br><span class="line">                memory_set,</span><br><span class="line">                parent: <span class="literal">None</span>,</span><br><span class="line">                children: <span class="type">Vec</span>::<span class="title function_ invoke__">new</span>(),</span><br><span class="line">                exit_code: <span class="number">0</span>,</span><br><span class="line">            &#125;)</span><br><span class="line">        &#125;,</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="comment">// prepare TrapContext in user space</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">trap_cx</span> = task_control_block.<span class="title function_ invoke__">inner_exclusive_access</span>().<span class="title function_ invoke__">get_trap_cx</span>();</span><br><span class="line">    *trap_cx = TrapContext::<span class="title function_ invoke__">app_init_context</span>(</span><br><span class="line">        entry_point,</span><br><span class="line">        user_sp,</span><br><span class="line">        KERNEL_SPACE.<span class="title function_ invoke__">exclusive_access</span>().<span class="title function_ invoke__">token</span>(),</span><br><span class="line">        kernel_stack_top,</span><br><span class="line">        trap_handler <span class="keyword">as</span> <span class="type">usize</span>,</span><br><span class="line">    );</span><br><span class="line">    task_control_block</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>通过elf_data创建进程地址空间，这个指路内存管理</li>
+<li>分配pid</li>
+<li>分配内核栈</li>
+<li>进程的上下文先通过goto_trap_return初始化</li>
+<li>通过TrapContext::app_init_context</li>
+</ol>
+<p><em>此时有两个问题，(1)进程的上下文初始化问题，(2)Trap的初始化问题</em></p>
+<h2 id="进程管理"><a href="#进程管理" class="headerlink" title="进程管理"></a>进程管理</h2><h3 id="进程管理器"><a href="#进程管理器" class="headerlink" title="进程管理器"></a>进程管理器</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="keyword">struct</span> <span class="title class_">TaskManager</span> &#123;</span><br><span class="line">    ready_queue: VecDeque&lt;Arc&lt;TaskControlBlock&gt;&gt;,</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">impl</span> <span class="title class_">TaskManager</span> &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="keyword">fn</span> <span class="title function_">add</span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>, task: Arc&lt;TaskControlBlock&gt;);</span><br><span class="line">    <span class="keyword">pub</span> <span class="keyword">fn</span> <span class="title function_">fetch</span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>) <span class="punctuation">-&gt;</span> <span class="type">Option</span>&lt;Arc&lt;TaskControlBlock&gt;&gt; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>TaskManager仅有一个FIFO队列，用于存放就绪的进程，提供两个方法，add和fetch，分别用于添加进程和获取进程，这里简单为添加到队尾，取出队首。</p>
+<h3 id="处理器"><a href="#处理器" class="headerlink" title="处理器"></a>处理器</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="keyword">struct</span> <span class="title class_">Processor</span> &#123;</span><br><span class="line">    current: <span class="type">Option</span>&lt;Arc&lt;TaskControlBlock&gt;&gt;,</span><br><span class="line">    idle_task_cx: TaskContext,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Processor两个字段，current表示当前正在执行的进程，idle_task_cx表示空闲流<br>processor作用就是调度进程，从当前任务执行切换到idle流</p>
+<figure class="highlight rust"><figcaption><span>linenos</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="keyword">fn</span> <span class="title function_">run_tasks</span>() &#123;</span><br><span class="line">    <span class="keyword">loop</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">processor</span> = PROCESSOR.<span class="title function_ invoke__">exclusive_access</span>();</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">let</span> <span class="variable">Some</span>(task) = <span class="title function_ invoke__">fetch_task</span>() &#123;</span><br><span class="line">            <span class="keyword">let</span> <span class="variable">idle_task_cx_ptr</span> = processor.<span class="title function_ invoke__">get_idle_task_cx_ptr</span>();</span><br><span class="line">            <span class="comment">// access coming task TCB exclusively</span></span><br><span class="line">            <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">task_inner</span> = task.<span class="title function_ invoke__">inner_exclusive_access</span>();</span><br><span class="line">            <span class="keyword">let</span> <span class="variable">next_task_cx_ptr</span> = &amp;task_inner.task_cx <span class="keyword">as</span> *<span class="keyword">const</span> TaskContext;</span><br><span class="line">            task_inner.task_status = TaskStatus::Running;</span><br><span class="line">            <span class="comment">// release coming task_inner manually</span></span><br><span class="line">            <span class="title function_ invoke__">drop</span>(task_inner);</span><br><span class="line">            <span class="comment">// release coming task TCB manually</span></span><br><span class="line">            processor.current = <span class="title function_ invoke__">Some</span>(task);</span><br><span class="line">            <span class="comment">// release processor manually</span></span><br><span class="line">            <span class="title function_ invoke__">drop</span>(processor);</span><br><span class="line">            <span class="keyword">unsafe</span> &#123;</span><br><span class="line">                __switch(idle_task_cx_ptr, next_task_cx_ptr);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            warn!(<span class="string">&quot;no tasks available in run_tasks&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>idle流这个流程即从task_manager取出进程，修改状态运行，保存到current，然后通过__switch切换到当前任务</p>
+<figure class="highlight rust"><figcaption><span>linenos</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="keyword">fn</span> <span class="title function_">schedule</span>(switched_task_cx_ptr: *<span class="keyword">mut</span> TaskContext) &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">processor</span> = PROCESSOR.<span class="title function_ invoke__">exclusive_access</span>();</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">idle_task_cx_ptr</span> = processor.<span class="title function_ invoke__">get_idle_task_cx_ptr</span>();</span><br><span class="line">    <span class="title function_ invoke__">drop</span>(processor);</span><br><span class="line">    <span class="keyword">unsafe</span> &#123;</span><br><span class="line">        __switch(switched_task_cx_ptr, idle_task_cx_ptr);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从current_task切换回idle_task通过调度，这里__switch会回到run_tasks的__switch出，也就继续取出下一个进程</p>
+<p><em>(3)问题：__switch是做了什么？</em></p>
+<h3 id="用户态进程创建"><a href="#用户态进程创建" class="headerlink" title="用户态进程创建"></a>用户态进程创建</h3><p>我们需要给用户态提供创建进程能力，这里就是多个相关syscall</p>
+<h4 id="sys-fork"><a href="#sys-fork" class="headerlink" title="sys_fork"></a>sys_fork</h4><p>从当前进程创建出一个子进程。我们知道TCB即进程抽象，所以就是从当前进程的TCB创建出一个新的TCB。步骤如下：</p>
+<ol>
+<li>创建新的内存地址空间</li>
+<li>分配新pid，kernel_stack</li>
+<li>重新设置用户地址空间高256G的映射（包括跳板以及trap_context)<br>创建了新的TCB之后，我们将其加入上面的就绪队列，等待调度</li>
+</ol>
+<h4 id="sys-exec"><a href="#sys-exec" class="headerlink" title="sys_exec"></a>sys_exec</h4><p>执行给定的elf文件。不同与fork，这里我们需要将创建的新用户地址空间替换原来的，使用原来的pid和kernel_stack，并调整trap_context指向新程序</p>
+<h4 id="sys-waitpid"><a href="#sys-waitpid" class="headerlink" title="sys_waitpid"></a>sys_waitpid</h4><p>因为实现细节不同不细分析，基本就是找到对应子进程，从children移除引用，返回退出码</p>
+<h3 id="init进程"><a href="#init进程" class="headerlink" title="init进程"></a>init进程</h3><p>我们知道linux内核启动后会创建init进程，这个进程是所有进程的父进程。<br>本次实验中也有这么一个Init进程，它全局变量的方式创建在data区</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">lazy_static! &#123;</span><br><span class="line">    <span class="comment">/// initproc的task control block</span></span><br><span class="line">    <span class="keyword">pub</span> <span class="keyword">static</span> <span class="keyword">ref</span> INITPROC: Arc&lt;TaskControlBlock&gt; = Arc::<span class="title function_ invoke__">new</span>(TaskControlBlock::<span class="title function_ invoke__">new</span>(</span><br><span class="line">        <span class="title function_ invoke__">get_app_data_by_name</span>(<span class="string">&quot;ch5b_initproc&quot;</span>).<span class="title function_ invoke__">unwrap</span>(),</span><br><span class="line">    ));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过add_task加入TaskManager就绪队列，等待调度。<br>用户程序exit退出后，进程资源回收就是通过Init进程。<br>用户程序退出后将自己状态改为zombie等待init回收，同时遍历自己的子进程，将其托管给init进程（即父进程改为init，init进程children列表增加），回收用户程序的内存地址。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="keyword">fn</span> <span class="title function_">exit_current_and_run_next</span>(exit_code: <span class="type">i32</span>) &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">task</span> = <span class="title function_ invoke__">take_current_task</span>().<span class="title function_ invoke__">unwrap</span>();</span><br><span class="line">    <span class="comment">// 当前为INITPROC，直接退出</span></span><br><span class="line">    <span class="keyword">if</span> task.<span class="title function_ invoke__">get_pid</span>() == <span class="number">0</span> &#123;</span><br><span class="line">        <span class="title function_ invoke__">shutdown</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">inner</span> = task.<span class="title function_ invoke__">inner_exclusive_access</span>();</span><br><span class="line">    inner.task_status = TaskStatus::Zombie;</span><br><span class="line">    inner.exit_code = exit_code;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 将此任务的所有儿子都托管给initproc</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">initproc_inner</span> = INITPROC.<span class="title function_ invoke__">inner_exclusive_access</span>();</span><br><span class="line">        inner.children.<span class="title function_ invoke__">iter</span>().for_each(|child| &#123;</span><br><span class="line">            child.<span class="title function_ invoke__">inner_exclusive_access</span>().parent = <span class="title function_ invoke__">Some</span>(Arc::<span class="title function_ invoke__">downgrade</span>(&amp;INITPROC));</span><br><span class="line">            initproc_inner.children.<span class="title function_ invoke__">push</span>(Arc::<span class="title function_ invoke__">clone</span>(child));</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    inner.children.<span class="title function_ invoke__">clear</span>();</span><br><span class="line">    <span class="comment">// 回收当前任务的数据页</span></span><br><span class="line">    inner.memory_set.<span class="title function_ invoke__">recycle_data_pages</span>();</span><br><span class="line">    <span class="title function_ invoke__">drop</span>(inner);</span><br><span class="line"></span><br><span class="line">    <span class="title function_ invoke__">drop</span>(task);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 运行下一个任务</span></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">_unused</span> = TaskContext::<span class="title function_ invoke__">zero_init</span>();</span><br><span class="line">    <span class="title function_ invoke__">schedule</span>(&amp;<span class="keyword">mut</span> _unused <span class="keyword">as</span> *<span class="keyword">mut</span> _);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="进程的生命周期管理"><a href="#进程的生命周期管理" class="headerlink" title="进程的生命周期管理"></a>进程的生命周期管理</h3><p>这里我想讨论TCB的生命周期管理，也就是<code>Arc&lt;TaskControlBlock&gt;</code>的引用，哪些时间点被哪些数据结构持有。</p>
+<ul>
+<li>用户进程创建<br>  用户一般通过sys_fork+sys_exec创建新进程，那么init_proc.children中有TCB的引用，sys_exec执行后会将TCB加入TaskManager.ready_queue，这是第二个引用。<br>  此时两个引用：<br>  {INIT_PROC.children, TASK_MANGER.ready_queue}</li>
+<li>调度<br>  调度时，通过TaskManager::fetch()拿到TCB所有权，并将其放入Processor.current字段中。<br>  此时两个引用：<br>  {INIT_PROC.children, PROCESSOR.current}</li>
+<li>进程退出<br>  用户调用exit后，使用take_current_task()从PROCESSOR.current获得所有权，并将其释放drop。<br>  此时一个引用：<br>  {INIT_PROC.children}</li>
+<li>回收<br>  waitpid中最终将TCB从INIT_PROC.children中移除。至此TCB引用为0，被最终释放。</li>
+</ul>
+<h2 id="操作系统总览"><a href="#操作系统总览" class="headerlink" title="操作系统总览"></a>操作系统总览</h2>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://rubick-hqm.github.io/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9Fch5_%E8%BF%9B%E7%A8%8B%E5%8F%8A%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86.html" data-id="cm9l183nh000044vj01zg4yke" data-title="serde的使用" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/03/">March 2025</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2025/03/02/serde/">serde的使用</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2025 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
